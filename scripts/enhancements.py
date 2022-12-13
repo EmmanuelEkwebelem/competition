@@ -13,7 +13,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 
 # Removing "non-essential" columns
-NoShowData = pandas.read_csv('data/output_noshow1_balanced_2022-11-16.csv')
+NoShowData = pandas.read_csv('data/output_noshow.csv')
 NoShowData.drop(['id', 'patient_id_2', 'appointment_id', 'appointment_status', 'appointment_yosi_noshow2', 
                  'custom_client','custom_client_site', 'client_site', 'data_collect', 'appointment_date_qt', 'appointment_date_month',
                  'appointment_date_year', 'appointment_start_time_hour', 'zipcode', 'geocode_zip', 'geocode_latitude', 'geocode_longitude', 'patient_age_groupper'], axis=1, inplace=True)
@@ -67,8 +67,8 @@ def get_distance(x, y):
 DistanceEnhancement['patient_distance_from_practice (miles)'] = get_distance(DistanceEnhancement['patient_zipcode_x'], DistanceEnhancement['practice_zipcode'])
 DistanceEnhancement['patient_distance_from_practice (miles)'] = DistanceEnhancement['patient_distance_from_practice (miles)'] * 0.621371
 # Removing rows with empty values in patient_distance_from_practice (miles) column
-DistanceEnhancement['patient_distance_from_practice (miles)'].replace('', numpy.nan, inplace=True)
-DistanceEnhancement.dropna(subset=['patient_distance_from_practice (miles)'], inplace=True)
+DistanceEnhancement['patient_distance_from_practice (miles)'].replace('', numpy.nan, inplace = True)
+DistanceEnhancement.dropna(subset=['patient_distance_from_practice (miles)'], inplace = True)
 DistanceEnhancement['patient_distance_from_practice (miles)'] = DistanceEnhancement['patient_distance_from_practice (miles)'].round(2)
 # Exporting dataset
 DistanceEnhancement.to_csv('data/master/DistanceEnhancement.csv', index = False)
@@ -90,7 +90,7 @@ AgeEnhancement.loc[AgeEnhancement['patient_age']>65, 'patient_age_group'] = 'eld
 # Removing non-essential columns from Enhanced Dataset
 AgeEnhancement.drop(['appointment_type','appointment_date_time', 'appointment_date', 'appointment_duration', 'appointment_start_time',
        'appointment_start_time_groupper', 'patient_gender', 'appointment_scheduled_date', 'appointment_last_modified_date', 'patient_zipcode_x',
-       'appintmentWithin3DayHoliday', 'practice_id', 'appintmentWithin5DayHoliday', 'patient_zipcode_x', 'appintmentWithin7DayHoliday'], axis=1, inplace=True)
+       'appintmentWithin3DayHoliday', 'practice_id', 'appintmentWithin5DayHoliday', 'patient_zipcode_x', 'appintmentWithin7DayHoliday'], axis = 1, inplace = True)
 # Reordering dataset columns
 NewAgeEnhancementColumnOrder = ['patient_id', 'patient_dob',
        'patient_age', 'patient_age_group', 'appointment_yosi_noshow1']
@@ -103,4 +103,10 @@ AgeEnhancement.to_csv('data/master/AgeEnhancement.csv', index = False)
 
 # Reallocating data 
 WeatherEnhancement = NoShowData2.copy()
-print(WeatherEnhancement.columns)
+WeatherEnhancement.drop(['appointment_start_time', 'appointment_duration', 'appointment_date_time', 'appointment_last_modified_date',
+       'appointment_scheduled_date', 'patient_dob', 'patient_zipcode_x', 'patient_gender', 'patient_age',
+       'appintmentWithin3DayHoliday', 'appintmentWithin5DayHoliday', 'appintmentWithin7DayHoliday'], axis = 1 , inplace = True)
+NewWeatherEnhancementColumnOrder = ['practice_id', 'patient_id', 'appointment_date', 'appointment_start_time_groupper', 'appointment_type',
+       'appointment_yosi_noshow1' ]
+WeatherEnhancement = WeatherEnhancement.reindex(columns = NewWeatherEnhancementColumnOrder)
+WeatherEnhancement.to_csv('data/master/WeatherEnhancement.csv', index = False)
