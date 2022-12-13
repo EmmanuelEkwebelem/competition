@@ -59,7 +59,7 @@ DistanceEnhancement['patient_distance_from_practice (miles)'] = DistanceEnhancem
 # Removing rows with empty values in distance column
 DistanceEnhancement['patient_distance_from_practice (miles)'].replace('', numpy.nan, inplace=True)
 DistanceEnhancement.dropna(subset=['patient_distance_from_practice (miles)'], inplace=True)
-print(DistanceEnhancement.shape)
+
 # Exporting dataset
 DistanceEnhancement.to_csv('data/master/DistanceEnhancement.csv', index = False)
 
