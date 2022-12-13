@@ -1,6 +1,12 @@
 import pandas 
 import numpy 
+import urllib.request
+import ssl
 import pgeocode
+ssl._create_default_https_context = ssl._create_unverified_context
+
+
+
 
 
 ### Cleaning ###
@@ -22,10 +28,14 @@ NoShowData2.replace('', numpy.nan, inplace=True)
 thresh = len(NoShowData2) * .2
 NoShowData2.dropna(thresh = thresh, axis = 1, inplace = True)
 print(NoShowData2.shape)
+
 ### Assessment Results ###
 # There are more rows with missing data than there are columns with missing data.
 # It would be more beneficial to enhance the NoShowData2 (100000 Rows) vs NoShowData1 (3265 Rows). Despite the fact that NoShowData1 has more columns (30) than NoShowData2 (19)
 # Goal: Assess relationship between No Shows and [Age], [Distance], [Weather].
+
+
+
 
 
 ###  Enhancement ###
@@ -56,10 +66,10 @@ def get_distance(x, y):
     return distance_in_kms
 DistanceEnhancement['patient_distance_from_practice (miles)'] = get_distance(DistanceEnhancement['patient_zipcode_x'], DistanceEnhancement['practice_zipcode'])
 DistanceEnhancement['patient_distance_from_practice (miles)'] = DistanceEnhancement['patient_distance_from_practice (miles)'] * 0.621371
-# Removing rows with empty values in distance column
+# Removing rows with empty values in patient_distance_from_practice (miles) column
 DistanceEnhancement['patient_distance_from_practice (miles)'].replace('', numpy.nan, inplace=True)
 DistanceEnhancement.dropna(subset=['patient_distance_from_practice (miles)'], inplace=True)
-
+DistanceEnhancement['patient_distance_from_practice (miles)'] = DistanceEnhancement['patient_distance_from_practice (miles)'].round(2)
 # Exporting dataset
 DistanceEnhancement.to_csv('data/master/DistanceEnhancement.csv', index = False)
 
@@ -67,7 +77,7 @@ DistanceEnhancement.to_csv('data/master/DistanceEnhancement.csv', index = False)
 ## Age Enhancement ##
 
 # Reallocating data and removing rows with empty cells
-AgeEnhancement = NoShowData2
+AgeEnhancement = NoShowData2.copy()
 # Grouping age ranges within dataset into a new oclumn 
 AgeEnhancement.loc[AgeEnhancement['patient_age']<8, 'patient_age_group'] = 'child'
 AgeEnhancement.loc[AgeEnhancement['patient_age'].between(8,12), 'patient_age_group'] = 'adolescent'
@@ -92,4 +102,5 @@ AgeEnhancement.to_csv('data/master/AgeEnhancement.csv', index = False)
 ## Weather Enhancement ##
 
 # Reallocating data 
-WeatherEnhancement = NoShowData2
+WeatherEnhancement = NoShowData2.copy()
+print(WeatherEnhancement.columns)
