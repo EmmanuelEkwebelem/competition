@@ -44,10 +44,7 @@ DistanceEnhancement = DistanceEnhancement.dropna(axis = 0)
 DistanceEnhancement['patient_zipcode_x'] = DistanceEnhancement['patient_zipcode_x'].astype(str)
 DistanceEnhancement['patient_zipcode_x'] = DistanceEnhancement['patient_zipcode_x'].apply(lambda x: x.zfill(5))
 DistanceEnhancement['patient_zipcode_x'] = DistanceEnhancement['patient_zipcode_x'].str[:5]
-# Reordering dataset columns
-NewDistanceEnhancementColumnOrder = ['practice_id', 'practice_name', 'practice_address1', 'practice_zipcode', 'patient_id','patient_zipcode_x', 'appointment_yosi_noshow1']
-# Calculating distance between patient zipcode and practice zipcode in miles
-DistanceEnhancement = DistanceEnhancement.reindex(columns = NewDistanceEnhancementColumnOrder)
+
 def get_distance(x, y):
     usa_zipcodes = pgeocode.GeoDistance('us')
     distance_in_kms = usa_zipcodes.query_postal_code(x.values, y.values)
@@ -58,6 +55,16 @@ DistanceEnhancement['patient_distance_from_practice (miles)'] = DistanceEnhancem
 DistanceEnhancement['patient_distance_from_practice (miles)'].replace('', numpy.nan, inplace = True)
 DistanceEnhancement.dropna(subset=['patient_distance_from_practice (miles)'], inplace = True)
 DistanceEnhancement['patient_distance_from_practice (miles)'] = DistanceEnhancement['patient_distance_from_practice (miles)'].round(2)
+DistanceEnhancement.loc[DistanceEnhancement['patient_distance_from_practice (miles)']<5.01, 'patient_distance_from_practice_group'] = 'nearby'
+DistanceEnhancement.loc[DistanceEnhancement['patient_distance_from_practice (miles)'].between(5.01,10), 'patient_distance_from_practice_group'] = 'close'
+DistanceEnhancement.loc[DistanceEnhancement['patient_distance_from_practice (miles)'].between(10.01,30), 'patient_distance_from_practice_group'] = 'far'
+DistanceEnhancement.loc[DistanceEnhancement['patient_distance_from_practice (miles)'].between(30.01,50.01), 'patient_distance_from_practice_group'] = 'very far'
+DistanceEnhancement.loc[DistanceEnhancement['patient_distance_from_practice (miles)']>50.01, 'patient_distance_from_practice_group'] = 'unreasonable distance'
+# Reordering dataset columns
+NewDistanceEnhancementColumnOrder = ['practice_id', 'practice_zipcode', 'patient_id',
+'patient_zipcode_x', 'patient_distance_from_practice (miles)', 'appointment_yosi_noshow1', 'patient_distance_from_practice_group']
+# Calculating distance between patient zipcode and practice zipcode in miles
+DistanceEnhancement = DistanceEnhancement.reindex(columns = NewDistanceEnhancementColumnOrder)
 # Exporting dataset
 DistanceEnhancement.to_csv('data/EnhancedDatasets/DistanceEnhancement.csv', index = False)
 
@@ -76,8 +83,7 @@ AgeEnhancement.loc[AgeEnhancement['patient_age'].between(31,49), 'patient_age_gr
 AgeEnhancement.loc[AgeEnhancement['patient_age'].between(50,65), 'patient_age_group'] = 'senior'
 AgeEnhancement.loc[AgeEnhancement['patient_age']>65, 'patient_age_group'] = 'elderly'
 # Reordering dataset columns
-NewAgeEnhancementColumnOrder = ['patient_id', 'patient_dob',
-       'patient_age', 'patient_age_group', 'appointment_yosi_noshow1']
+NewAgeEnhancementColumnOrder = ['patient_id', 'patient_age', 'appointment_yosi_noshow1', 'patient_age_group']
 AgeEnhancement = AgeEnhancement.reindex(columns = NewAgeEnhancementColumnOrder)
 # Exporting dataset
 AgeEnhancement.to_csv('data/EnhancedDatasets/AgeEnhancement.csv', index = False)
@@ -112,6 +118,10 @@ WeatherData2['appointment_date'] = pandas.to_datetime(WeatherData2['appointment_
 EnhancingWeatherData = pandas.merge(WeatherData2, WeatherData_19128, on = ['practice_zipcode', 'appointment_date'], how = 'inner')
 # Combining EnhancingWeatherData with WeatherData1
 WeatherEnhancement = pandas.concat([EnhancingWeatherData, WeatherData1], ignore_index=True, sort=False)
+# Reordering dataset columns
+NewWeatherEnhancementColumnOrder = ['practice_id', 'patient_id', 'appointment_date', 
+'appointment_yosi_noshow1', 'weather_icon']
+WeatherEnhancement = WeatherEnhancement.reindex(columns = NewWeatherEnhancementColumnOrder)
 # Exporting dataset
 WeatherEnhancement.to_csv('data/EnhancedDatasets/WeatherEnhancement.csv', index = False)
 
