@@ -3,6 +3,7 @@ import numpy
 import urllib.request
 import ssl
 import pgeocode
+from datetime import datetime
 ssl._create_default_https_context = ssl._create_unverified_context
 
 
@@ -101,26 +102,36 @@ AgeEnhancement.to_csv('data/master/AgeEnhancement.csv', index = False)
 
 ## Weather Enhancement ##
 
-# Merging enhancing dataset with NoShowData2 and removing rows with empty cells
-WeatherEnhancement = pandas.merge(NoShowData2, practiceLocation, on = 'practice_id', how = 'inner')
-WeatherEnhancement = WeatherEnhancement.dropna(axis = 0)
-# Removing non-essential columns from Enhanced Dataset
-WeatherEnhancement.drop(['patient_dob','patient_age', 'patient_gender', 'appointment_last_modified_date', 'practice_name' , 'practice_address1',
-'appintmentWithin3DayHoliday', 'appointment_type','appointment_date_time', 'appointment_duration', 'appointment_scheduled_date', 'appintmentWithin5DayHoliday', 'appintmentWithin7DayHoliday',], axis=1, inplace=True)
-# Reordering dataset columns
-NewWeatherEnhancementColumnOrder = ['practice_id', 'practice_zipcode', 'patient_id', 'appointment_start_time_groupper','appointment_date', 'appointment_start_time', 'appointment_yosi_noshow1']
-WeatherEnhancement = WeatherEnhancement.reindex(columns = NewWeatherEnhancementColumnOrder)
 
-### NOTE: WEBSITE WITH DAILY WEATHER BY ZIPCODE ONLY ALLOWS FOR FREE DOWNLOAD OF 5 ZIPCODE DATASETS
-### As a result "WeatherEnhancement" could only be enhanced by the top 5 most common zipcodes
-# Assess top 5
-print((WeatherEnhancement['practice_zipcode'].value_counts()).head(10))
-# Zipcode   Count
-# 19128     11883
-# 73120     10865
-# 85258     6085
-# 19134     5725
-# 80229     4536
+WeatherData1 = pandas.merge(NoShowData1, practiceLocation, on = 'practice_id', how = 'inner')
+WeatherData1 = WeatherData1.dropna(axis = 0)
+WeatherData2 = pandas.merge(NoShowData2, practiceLocation, on = 'practice_id', how = 'inner')
+WeatherData2 = WeatherData2.dropna(axis = 0)
 
-# Exporting dataset
+NewWeatherData1ColumnOrder =  ['practice_id', 'practice_zipcode', 'patient_id', 
+'appointment_start_time_groupper','appointment_date', 'weather_icon', 'appointment_yosi_noshow1']
+WeatherData1 = WeatherData1.reindex(columns = NewWeatherData1ColumnOrder)
+NewWeatherData2ColumnOrder = ['practice_id', 'practice_zipcode', 'patient_id', 
+'appointment_start_time_groupper','appointment_date', 'appointment_yosi_noshow1']
+WeatherData2 = WeatherData2.reindex(columns = NewWeatherData2ColumnOrder)
+
+WeatherData_19128 = pandas.read_csv('data/weatherconditions.csv')
+
+WeatherData_19128.rename(columns = {'zipcode':'practice_zipcode'}, inplace = True)
+WeatherData_19128.rename(columns = {'datetime':'appointment_date'}, inplace = True)
+WeatherData_19128.rename(columns = {'icon':'weather_icon'}, inplace = True)
+
+WeatherData_19128['practice_zipcode'] = WeatherData_19128['practice_zipcode'].astype(str)
+WeatherData_19128['appointment_date'] = pandas.to_datetime(WeatherData_19128['appointment_date'])
+WeatherData2['appointment_date'] = pandas.to_datetime(WeatherData2['appointment_date'])
+
+EnhancingWeatherData = pandas.merge(WeatherData2, WeatherData_19128, on = ['practice_zipcode', 'appointment_date'], how = 'inner')
+NewEnhancingWeatherDataColumnOrder = ['practice_id', 'practice_zipcode', 'patient_id', 
+'appointment_start_time_groupper','appointment_date', 'weather_icon', 'appointment_yosi_noshow1']
+EnhancingWeatherData = EnhancingWeatherData.reindex(columns = NewEnhancingWeatherDataColumnOrder)
+
+
+WeatherEnhancement = pandas.concat([EnhancingWeatherData, WeatherData1], ignore_index=True, sort=False)
+
+print(WeatherEnhancement.shape)
 WeatherEnhancement.to_csv('data/master/WeatherEnhancement.csv', index = False)
