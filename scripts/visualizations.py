@@ -5,14 +5,6 @@ DistanceEnhancement = pandas.read_csv('data\EnhancedDatasets\DistanceEnhancement
 AgeEnhancement = pandas.read_csv('data\EnhancedDatasets\AgeEnhancement.csv')
 WeatherEnhancement = pandas.read_csv('data\EnhancedDatasets\WeatherEnhancement.csv')
 
-AgeEnhancement_Y = (AgeEnhancement[AgeEnhancement["appointment_yosi_noshow1"] == 'Y'])
-AgeEnhancement_N = (AgeEnhancement[AgeEnhancement["appointment_yosi_noshow1"] == 'N'])
-DistanceEnhancement_Y = (DistanceEnhancement[DistanceEnhancement["appointment_yosi_noshow1"] == 'Y'])
-DistanceEnhancement_N = (DistanceEnhancement[DistanceEnhancement["appointment_yosi_noshow1"] == 'N'])
-WeatherEnhancement_Y = (WeatherEnhancement[WeatherEnhancement["appointment_yosi_noshow1"] == 'Y'])
-WeatherEnhancement_N = (WeatherEnhancement[WeatherEnhancement["appointment_yosi_noshow1"] == 'N'])
-
-
 # Header
 streamlit.header('AHI Competition Visualalization')
 
