@@ -44,9 +44,6 @@ DistanceEnhancement = DistanceEnhancement.dropna(axis = 0)
 DistanceEnhancement['patient_zipcode_x'] = DistanceEnhancement['patient_zipcode_x'].astype(str)
 DistanceEnhancement['patient_zipcode_x'] = DistanceEnhancement['patient_zipcode_x'].apply(lambda x: x.zfill(5))
 DistanceEnhancement['patient_zipcode_x'] = DistanceEnhancement['patient_zipcode_x'].str[:5]
-# Removing non-essential columns from Enhanced Dataset
-DistanceEnhancement.drop([ 'patient_dob','patient_age', 'patient_gender', 'appointment_start_time_groupper', 
- 'appointment_scheduled_date', 'appointment_last_modified_date', 'appintmentWithin3DayHoliday', 'appointment_type','appointment_date_time', 'appointment_duration', 'appointment_date', 'appointment_start_time', 'appintmentWithin5DayHoliday', 'appintmentWithin7DayHoliday',], axis=1, inplace=True)
 # Reordering dataset columns
 NewDistanceEnhancementColumnOrder = ['practice_id', 'practice_name', 'practice_address1', 'practice_zipcode', 'patient_id','patient_zipcode_x', 'appointment_yosi_noshow1']
 # Calculating distance between patient zipcode and practice zipcode in miles
@@ -62,7 +59,7 @@ DistanceEnhancement['patient_distance_from_practice (miles)'].replace('', numpy.
 DistanceEnhancement.dropna(subset=['patient_distance_from_practice (miles)'], inplace = True)
 DistanceEnhancement['patient_distance_from_practice (miles)'] = DistanceEnhancement['patient_distance_from_practice (miles)'].round(2)
 # Exporting dataset
-DistanceEnhancement.to_csv('data/master/DistanceEnhancement.csv', index = False)
+DistanceEnhancement.to_csv('data/EnhancedDatasets/DistanceEnhancement.csv', index = False)
 
 
 ## Age Enhancement ##
@@ -78,16 +75,12 @@ AgeEnhancement.loc[AgeEnhancement['patient_age'].between(24,30), 'patient_age_gr
 AgeEnhancement.loc[AgeEnhancement['patient_age'].between(31,49), 'patient_age_group'] = 'adult'
 AgeEnhancement.loc[AgeEnhancement['patient_age'].between(50,65), 'patient_age_group'] = 'senior'
 AgeEnhancement.loc[AgeEnhancement['patient_age']>65, 'patient_age_group'] = 'elderly'
-# Removing non-essential columns from Enhanced Dataset
-AgeEnhancement.drop(['appointment_type','appointment_date_time', 'appointment_date', 'appointment_duration', 'appointment_start_time',
-       'appointment_start_time_groupper', 'patient_gender', 'appointment_scheduled_date', 'appointment_last_modified_date', 'patient_zipcode_x',
-       'appintmentWithin3DayHoliday', 'practice_id', 'appintmentWithin5DayHoliday', 'patient_zipcode_x', 'appintmentWithin7DayHoliday'], axis = 1, inplace = True)
 # Reordering dataset columns
 NewAgeEnhancementColumnOrder = ['patient_id', 'patient_dob',
        'patient_age', 'patient_age_group', 'appointment_yosi_noshow1']
 AgeEnhancement = AgeEnhancement.reindex(columns = NewAgeEnhancementColumnOrder)
 # Exporting dataset
-AgeEnhancement.to_csv('data/master/AgeEnhancement.csv', index = False)
+AgeEnhancement.to_csv('data/EnhancedDatasets/AgeEnhancement.csv', index = False)
 
 
 ## Weather Enhancement ##
@@ -120,19 +113,18 @@ EnhancingWeatherData = pandas.merge(WeatherData2, WeatherData_19128, on = ['prac
 # Combining EnhancingWeatherData with WeatherData1
 WeatherEnhancement = pandas.concat([EnhancingWeatherData, WeatherData1], ignore_index=True, sort=False)
 # Exporting dataset
-WeatherEnhancement.to_csv('data/master/WeatherEnhancement.csv', index = False)
+WeatherEnhancement.to_csv('data/EnhancedDatasets/WeatherEnhancement.csv', index = False)
 
-# Process Explained: WeatherData1 already has a "Weather Condition Column"
-# So I chose to enhance WeatherData2 and then combine WeatherData1 & WeatherData2 and assess the combined WeatherEnhancement Dataset
+# Process Explained: WeatherData1 already has a "Weather Condition Column" So I chose to enhance WeatherData2 and then combine WeatherData1 & WeatherData2 and assess the combined WeatherEnhancement Dataset
 
 ### I initially seperated Each "_Enhancment.csv" as it made it easier for me to analyze/understand
 ### I combined all 3 Enhancement files into a master csv in this script
-AgeEnhancement = pandas.read_csv('data/master/AgeEnhancement.csv')
-DistanceEnhancement = pandas.read_csv('data/master/DistanceEnhancement.csv')
-WeatherEnhancement = pandas.read_csv('data/master/WeatherEnhancement.csv')
 
-combine = pandas.merge(DistanceEnhancement, AgeEnhancement, on = 'patient_id', how = 'outer')
-master = pandas.merge(combine, WeatherEnhancement, on = 'patient_id', how = 'outer')
+master = pandas.concat([DistanceEnhancement, AgeEnhancement, WeatherEnhancement], ignore_index=True, sort=False)
 master.drop_duplicates(subset=['patient_id'], keep=False)
+print(DistanceEnhancement.shape)
+print(AgeEnhancement.shape)
+print(WeatherEnhancement.shape)
 print(master.shape)
-master.to_csv('data/master/master.csv', index = False)
+master.to_csv('data/master.csv', index = False)
+print()
