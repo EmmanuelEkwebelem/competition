@@ -6,29 +6,19 @@ import pgeocode
 from datetime import datetime
 ssl._create_default_https_context = ssl._create_unverified_context
 
+### Assessing Dataset ###
 
 
-
-
-### Cleaning ###
-
-
-# Removing "non-essential" columns
 NoShowData = pandas.read_csv('data/output_noshow.csv')
-NoShowData.drop(['id', 'patient_id_2', 'appointment_id', 'appointment_status', 'appointment_yosi_noshow2', 
-                 'custom_client','custom_client_site', 'client_site', 'data_collect', 'appointment_date_qt', 'appointment_date_month',
-                 'appointment_date_year', 'appointment_start_time_hour', 'zipcode', 'geocode_zip', 'geocode_latitude', 'geocode_longitude', 'patient_age_groupper'], axis=1, inplace=True)
 # Assessing NoShowData without missing rows cells
 NoShowData1 = NoShowData
 NoShowData1.replace('', numpy.nan, inplace=True)
 NoShowData1 = NoShowData1.dropna(axis = 0)
-#print(NoShowData1.shape)#
 # Assessing NoShowData without missing columns cells, with a threshold for missingness
 NoShowData2 = NoShowData
 NoShowData2.replace('', numpy.nan, inplace=True)
 thresh = len(NoShowData2) * .2
 NoShowData2.dropna(thresh = thresh, axis = 1, inplace = True)
-#print(NoShowData2.shape)#
 
 ### Assessment Results ###
 # There are more rows with missing data than there are columns with missing data.
@@ -102,36 +92,47 @@ AgeEnhancement.to_csv('data/master/AgeEnhancement.csv', index = False)
 
 ## Weather Enhancement ##
 
-
+# Loading both NoShowData1 & NoShowData2, and combining it with practiceLocation to obtain pratice_zipcodes
 WeatherData1 = pandas.merge(NoShowData1, practiceLocation, on = 'practice_id', how = 'inner')
 WeatherData1 = WeatherData1.dropna(axis = 0)
 WeatherData2 = pandas.merge(NoShowData2, practiceLocation, on = 'practice_id', how = 'inner')
 WeatherData2 = WeatherData2.dropna(axis = 0)
-
+# Re-ordering dataset columns
 NewWeatherData1ColumnOrder =  ['practice_id', 'practice_zipcode', 'patient_id', 
 'appointment_start_time_groupper','appointment_date', 'weather_icon', 'appointment_yosi_noshow1']
 WeatherData1 = WeatherData1.reindex(columns = NewWeatherData1ColumnOrder)
 NewWeatherData2ColumnOrder = ['practice_id', 'practice_zipcode', 'patient_id', 
 'appointment_start_time_groupper','appointment_date', 'appointment_yosi_noshow1']
 WeatherData2 = WeatherData2.reindex(columns = NewWeatherData2ColumnOrder)
-
+# Loading Weather Enhancements Datatset for 19128 Zipcode between 10-29-2019 & 12-1-2021
+# Used 19128 Zipcode because it was the most frequent zipcode is WeatherData2 Dataset (11883 Rows)
 WeatherData_19128 = pandas.read_csv('data/weatherconditions.csv')
-
+# Renaming columns names to align with previous datasets
 WeatherData_19128.rename(columns = {'zipcode':'practice_zipcode'}, inplace = True)
 WeatherData_19128.rename(columns = {'datetime':'appointment_date'}, inplace = True)
 WeatherData_19128.rename(columns = {'icon':'weather_icon'}, inplace = True)
-
+# Reformatting column datatypes for merger
 WeatherData_19128['practice_zipcode'] = WeatherData_19128['practice_zipcode'].astype(str)
 WeatherData_19128['appointment_date'] = pandas.to_datetime(WeatherData_19128['appointment_date'])
 WeatherData2['appointment_date'] = pandas.to_datetime(WeatherData2['appointment_date'])
-
+# Merging/Enhancing NoShowData2 with WeatherData2 
 EnhancingWeatherData = pandas.merge(WeatherData2, WeatherData_19128, on = ['practice_zipcode', 'appointment_date'], how = 'inner')
-NewEnhancingWeatherDataColumnOrder = ['practice_id', 'practice_zipcode', 'patient_id', 
-'appointment_start_time_groupper','appointment_date', 'weather_icon', 'appointment_yosi_noshow1']
-EnhancingWeatherData = EnhancingWeatherData.reindex(columns = NewEnhancingWeatherDataColumnOrder)
-
-
+# Combining EnhancingWeatherData with WeatherData1
 WeatherEnhancement = pandas.concat([EnhancingWeatherData, WeatherData1], ignore_index=True, sort=False)
-
-print(WeatherEnhancement.shape)
+# Exporting dataset
 WeatherEnhancement.to_csv('data/master/WeatherEnhancement.csv', index = False)
+
+# Process Explained: WeatherData1 already has a "Weather Condition Column"
+# So I chose to enhance WeatherData2 and then combine WeatherData1 & WeatherData2 and assess the combined WeatherEnhancement Dataset
+
+### I initially seperated Each "_Enhancment.csv" as it made it easier for me to analyze/understand
+### I combined all 3 Enhancement files into a master csv in this script
+AgeEnhancement = pandas.read_csv('data/master/AgeEnhancement.csv')
+DistanceEnhancement = pandas.read_csv('data/master/DistanceEnhancement.csv')
+WeatherEnhancement = pandas.read_csv('data/master/WeatherEnhancement.csv')
+
+combine = pandas.merge(DistanceEnhancement, AgeEnhancement, on = 'patient_id', how = 'outer')
+master = pandas.merge(combine, WeatherEnhancement, on = 'patient_id', how = 'outer')
+master.drop_duplicates(subset=['patient_id'], keep=False)
+print(master.shape)
+master.to_csv('data/master/master.csv', index = False)
