@@ -122,9 +122,6 @@ WeatherEnhancement.to_csv('data/EnhancedDatasets/WeatherEnhancement.csv', index 
 
 master = pandas.concat([DistanceEnhancement, AgeEnhancement, WeatherEnhancement], ignore_index=True, sort=False)
 master.drop_duplicates(subset=['patient_id'], keep=False)
-print(DistanceEnhancement.shape)
-print(AgeEnhancement.shape)
-print(WeatherEnhancement.shape)
-print(master.shape)
+
 master.to_csv('data/master.csv', index = False)
 print()
