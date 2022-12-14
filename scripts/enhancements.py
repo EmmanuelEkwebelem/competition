@@ -21,13 +21,13 @@ NoShowData.drop(['id', 'patient_id_2', 'appointment_id', 'appointment_status', '
 NoShowData1 = NoShowData
 NoShowData1.replace('', numpy.nan, inplace=True)
 NoShowData1 = NoShowData1.dropna(axis = 0)
-print(NoShowData1.shape)
+#print(NoShowData1.shape)#
 # Assessing NoShowData without missing columns cells, with a threshold for missingness
 NoShowData2 = NoShowData
 NoShowData2.replace('', numpy.nan, inplace=True)
 thresh = len(NoShowData2) * .2
 NoShowData2.dropna(thresh = thresh, axis = 1, inplace = True)
-print(NoShowData2.shape)
+#print(NoShowData2.shape)#
 
 ### Assessment Results ###
 # There are more rows with missing data than there are columns with missing data.
@@ -104,19 +104,23 @@ AgeEnhancement.to_csv('data/master/AgeEnhancement.csv', index = False)
 # Merging enhancing dataset with NoShowData2 and removing rows with empty cells
 WeatherEnhancement = pandas.merge(NoShowData2, practiceLocation, on = 'practice_id', how = 'inner')
 WeatherEnhancement = WeatherEnhancement.dropna(axis = 0)
-# Reformatting dataset Zip-Code to 5 digits only
-WeatherEnhancement['patient_zipcode_x'] = WeatherEnhancement['patient_zipcode_x'].astype(str)
-WeatherEnhancement['patient_zipcode_x'] = WeatherEnhancement['patient_zipcode_x'].apply(lambda x: x.zfill(5))
-WeatherEnhancement['patient_zipcode_x'] = WeatherEnhancement['patient_zipcode_x'].str[:5]
 # Removing non-essential columns from Enhanced Dataset
 WeatherEnhancement.drop(['patient_dob','patient_age', 'patient_gender', 'appointment_last_modified_date', 'practice_name' , 'practice_address1',
 'appintmentWithin3DayHoliday', 'appointment_type','appointment_date_time', 'appointment_duration', 'appointment_scheduled_date', 'appintmentWithin5DayHoliday', 'appintmentWithin7DayHoliday',], axis=1, inplace=True)
 # Reordering dataset columns
 NewWeatherEnhancementColumnOrder = ['practice_id', 'practice_zipcode', 'patient_id', 'appointment_start_time_groupper','appointment_date', 'appointment_start_time', 'appointment_yosi_noshow1']
 WeatherEnhancement = WeatherEnhancement.reindex(columns = NewWeatherEnhancementColumnOrder)
+
+### NOTE: WEBSITE WITH DAILY WEATHER BY ZIPCODE ONLY ALLOWS FOR FREE DOWNLOAD OF 5 ZIPCODE DATASETS
+### As a result "WeatherEnhancement" could only be enhanced by the top 5 most common zipcodes
+# Assess top 5
+print((WeatherEnhancement['practice_zipcode'].value_counts()).head(10))
+# Zipcode   Count
+# 19128     11883
+# 73120     10865
+# 85258     6085
+# 19134     5725
+# 80229     4536
+
 # Exporting dataset
 WeatherEnhancement.to_csv('data/master/WeatherEnhancement.csv', index = False)
-
-print(DistanceEnhancement.shape)
-print(AgeEnhancement.shape)
-print(WeatherEnhancement.shape)
