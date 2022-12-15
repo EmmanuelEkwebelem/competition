@@ -1,0 +1,39 @@
+{
+    "columns": [
+        "practice_id",
+        "practice_zipcode",
+        "patient_id",
+        "patient_zipcode_x",
+        "patient_distance_from_practice (miles)",
+        "appointment_yosi_noshow1"
+    ],
+    "rows": 68908,
+    "cols": 6,
+    "target_is_numeric": false,
+    "columns_info": {
+        "practice_id": [
+            "scale"
+        ],
+        "practice_zipcode": [
+            "scale"
+        ],
+        "patient_id": [
+            "scale"
+        ],
+        "patient_zipcode_x": [
+            "scale"
+        ],
+        "patient_distance_from_practice (miles)": [
+            "scale"
+        ],
+        "appointment_yosi_noshow1": [
+            "categorical",
+            "few_categories"
+        ]
+    },
+    "target_info": [],
+    "n_features": 6,
+    "is_sample_weighted": false,
+    "n_classes": 5,
+    "num_class": 5
+}

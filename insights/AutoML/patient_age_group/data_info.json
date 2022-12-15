@@ -1,0 +1,27 @@
+{
+    "columns": [
+        "patient_id",
+        "patient_age",
+        "appointment_yosi_noshow1"
+    ],
+    "rows": 75000,
+    "cols": 3,
+    "target_is_numeric": false,
+    "columns_info": {
+        "patient_id": [
+            "scale"
+        ],
+        "patient_age": [
+            "scale"
+        ],
+        "appointment_yosi_noshow1": [
+            "categorical",
+            "few_categories"
+        ]
+    },
+    "target_info": [],
+    "n_features": 3,
+    "is_sample_weighted": false,
+    "n_classes": 8,
+    "num_class": 8
+}

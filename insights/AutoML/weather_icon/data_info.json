@@ -1,0 +1,32 @@
+{
+    "columns": [
+        "practice_id",
+        "patient_id",
+        "appointment_date",
+        "appointment_yosi_noshow1"
+    ],
+    "rows": 11383,
+    "cols": 4,
+    "target_is_numeric": false,
+    "columns_info": {
+        "practice_id": [
+            "scale"
+        ],
+        "patient_id": [
+            "scale"
+        ],
+        "appointment_date": [
+            "categorical",
+            "many_categories"
+        ],
+        "appointment_yosi_noshow1": [
+            "categorical",
+            "few_categories"
+        ]
+    },
+    "target_info": [],
+    "n_features": 4,
+    "is_sample_weighted": false,
+    "n_classes": 6,
+    "num_class": 6
+}

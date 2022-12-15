@@ -1,0 +1,7 @@
+feature,mean_importance
+patient_id,-0.00011160242000748683
+appointment_yosi_noshow1,5.95448980950217e-05
+practice_zipcode,0.0011332912043895316
+patient_zipcode_x,0.006875676308476892
+practice_id,0.00811989579847254
+patient_distance_from_practice (miles),6.536231937297666

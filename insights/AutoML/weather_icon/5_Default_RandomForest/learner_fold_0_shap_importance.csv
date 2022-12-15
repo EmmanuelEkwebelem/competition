@@ -1,0 +1,5 @@
+feature,shap_importance
+appointment_date,0.36761623763890866
+practice_id,0.08363913786252003
+patient_id,0.05257011120621349
+appointment_yosi_noshow1,0.0

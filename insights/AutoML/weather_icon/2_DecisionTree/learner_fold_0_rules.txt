@@ -1,0 +1,14 @@
+if (appointment_date <= 609.5) and (appointment_date <= 568.5) and (appointment_date <= 546.5) then class: rain (proba: 55.27%) | based on 3,653 samples
+
+if (appointment_date > 609.5) and (appointment_date <= 807.5) and (appointment_date > 613.5) then class: partly-cloudy-day (proba: 34.43%) | based on 2,498 samples
+
+if (appointment_date > 609.5) and (appointment_date > 807.5) and (appointment_date <= 913.5) then class: rain (proba: 64.58%) | based on 799 samples
+
+if (appointment_date <= 609.5) and (appointment_date > 568.5) then class: rain (proba: 100.0%) | based on 793 samples
+
+if (appointment_date <= 609.5) and (appointment_date <= 568.5) and (appointment_date > 546.5) then class: clear-day (proba: 51.6%) | based on 374 samples
+
+if (appointment_date > 609.5) and (appointment_date > 807.5) and (appointment_date > 913.5) then class: partly-cloudy-day (proba: 38.07%) | based on 331 samples
+
+if (appointment_date > 609.5) and (appointment_date <= 807.5) and (appointment_date <= 613.5) then class: clear-day (proba: 100.0%) | based on 89 samples
+

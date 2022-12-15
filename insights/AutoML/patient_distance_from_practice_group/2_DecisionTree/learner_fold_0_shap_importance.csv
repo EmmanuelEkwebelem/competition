@@ -1,0 +1,7 @@
+feature,shap_importance
+patient_distance_from_practice (miles),1.2784764613687831
+practice_id,0.0
+practice_zipcode,0.0
+patient_id,0.0
+patient_zipcode_x,0.0
+appointment_yosi_noshow1,0.0

@@ -1,0 +1,188 @@
+{
+    "uid": "c26303ee-c6d5-4964-8bc5-6f7d03d093b1",
+    "name": "4_Default_NeuralNetwork",
+    "preprocessing": [
+        {
+            "categorical": [
+                {
+                    "convert_method": "categorical_to_int",
+                    "convert_params": {
+                        "appointment_yosi_noshow1": {
+                            "N": 0,
+                            "Y": 1
+                        }
+                    },
+                    "columns": [
+                        "appointment_yosi_noshow1"
+                    ]
+                }
+            ],
+            "scale": [
+                {
+                    "scale": [
+                        74218.0558217436,
+                        29262.363019507433,
+                        182500.588668466,
+                        29437.09355696695,
+                        151.21751932040496,
+                        0.4988879101229621
+                    ],
+                    "mean": [
+                        296086.9296453242,
+                        46940.410344227086,
+                        237816.69000212845,
+                        47010.73870474642,
+                        20.784992743948454,
+                        0.4666705365608251
+                    ],
+                    "var": [
+                        5508319809.959449,
+                        856285889.4854362,
+                        33306464864.336613,
+                        866542477.0816251,
+                        22866.73814941705,
+                        0.24888914686685668
+                    ],
+                    "n_samples_seen": 51681,
+                    "n_features_in": 6,
+                    "columns": [
+                        "practice_id",
+                        "practice_zipcode",
+                        "patient_id",
+                        "patient_zipcode_x",
+                        "patient_distance_from_practice (miles)",
+                        "appointment_yosi_noshow1"
+                    ],
+                    "scale_method": "scale_normal"
+                }
+            ],
+            "categorical_y": {
+                "close": 0,
+                "far": 1,
+                "nearby": 2,
+                "unreasonable distance": 3,
+                "very far": 4
+            },
+            "ml_task": "multiclass_classification",
+            "params": {
+                "columns_preprocessing": {
+                    "practice_id": [
+                        "scale_normal"
+                    ],
+                    "practice_zipcode": [
+                        "scale_normal"
+                    ],
+                    "patient_id": [
+                        "scale_normal"
+                    ],
+                    "patient_zipcode_x": [
+                        "scale_normal"
+                    ],
+                    "patient_distance_from_practice (miles)": [
+                        "scale_normal"
+                    ],
+                    "appointment_yosi_noshow1": [
+                        "categorical_to_int",
+                        "scale_normal"
+                    ]
+                },
+                "target_preprocessing": [
+                    "na_exclude",
+                    "categorical_to_int"
+                ],
+                "ml_task": "multiclass_classification"
+            }
+        }
+    ],
+    "learners": [
+        {
+            "library_version": "1.2.0",
+            "algorithm_name": "Neural Network",
+            "algorithm_short_name": "Neural Network",
+            "uid": "aad61e4a-a43a-471b-adb3-c4c2d25fdc3c",
+            "params": {
+                "model_type": "Neural Network",
+                "ml_task": "multiclass_classification",
+                "n_jobs": -1,
+                "dense_1_size": 32,
+                "dense_2_size": 16,
+                "learning_rate": 0.05,
+                "seed": 4,
+                "num_class": 5,
+                "explain_level": 2
+            },
+            "name": "learner_fold_0"
+        }
+    ],
+    "params": {
+        "additional": {
+            "max_rows_limit": null,
+            "max_cols_limit": null
+        },
+        "preprocessing": {
+            "columns_preprocessing": {
+                "practice_id": [
+                    "scale_normal"
+                ],
+                "practice_zipcode": [
+                    "scale_normal"
+                ],
+                "patient_id": [
+                    "scale_normal"
+                ],
+                "patient_zipcode_x": [
+                    "scale_normal"
+                ],
+                "patient_distance_from_practice (miles)": [
+                    "scale_normal"
+                ],
+                "appointment_yosi_noshow1": [
+                    "categorical_to_int",
+                    "scale_normal"
+                ]
+            },
+            "target_preprocessing": [
+                "na_exclude",
+                "categorical_to_int"
+            ],
+            "ml_task": "multiclass_classification"
+        },
+        "validation_strategy": {
+            "validation_type": "split",
+            "train_ratio": 0.75,
+            "shuffle": true,
+            "stratify": true,
+            "X_path": "patient_distance_from_practice_group\\X.data",
+            "y_path": "patient_distance_from_practice_group\\y.data",
+            "results_path": "patient_distance_from_practice_group"
+        },
+        "learner": {
+            "model_type": "Neural Network",
+            "ml_task": "multiclass_classification",
+            "n_jobs": -1,
+            "dense_1_size": 32,
+            "dense_2_size": 16,
+            "learning_rate": 0.05,
+            "seed": 4,
+            "num_class": 5,
+            "explain_level": 2
+        },
+        "automl_random_state": 1234,
+        "ml_task": "multiclass_classification",
+        "explain_level": 2,
+        "name": "4_Default_NeuralNetwork",
+        "status": "initialized",
+        "final_loss": null,
+        "train_time": null,
+        "data_type": "original",
+        "max_time_for_learner": 360.0
+    },
+    "saved": [
+        "4_Default_NeuralNetwork\\learner_fold_0.neural_network"
+    ],
+    "predictions_fname": "4_Default_NeuralNetwork\\predictions_validation.csv",
+    "metric_name": "logloss",
+    "final_loss": 0.01721375640610566,
+    "train_time": 10.430480241775513,
+    "is_stacked": false
+}

@@ -1,0 +1,12 @@
+if (patient_age > 30.5) and (patient_age <= 49.5) then class: adult (proba: 100.0%) | based on 14,674 samples
+
+if (patient_age <= 30.5) and (patient_age <= 23.5) and (patient_age > 7.5) then class: young adult (proba: 42.33%) | based on 13,405 samples
+
+if (patient_age <= 30.5) and (patient_age > 23.5) then class: mature adult (proba: 100.0%) | based on 9,513 samples
+
+if (patient_age <= 30.5) and (patient_age <= 23.5) and (patient_age <= 7.5) then class: child (proba: 100.0%) | based on 9,476 samples
+
+if (patient_age > 30.5) and (patient_age > 49.5) and (patient_age <= 65.5) then class: senior (proba: 100.0%) | based on 6,074 samples
+
+if (patient_age > 30.5) and (patient_age > 49.5) and (patient_age > 65.5) then class: elderly (proba: 100.0%) | based on 3,108 samples
+

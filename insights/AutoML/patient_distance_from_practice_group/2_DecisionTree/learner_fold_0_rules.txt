@@ -1,0 +1,8 @@
+if (patient_distance_from_practice (miles) <= 5.005) then class: nearby (proba: 100.0%) | based on 26,408 samples
+
+if (patient_distance_from_practice (miles) > 5.005) and (patient_distance_from_practice (miles) <= 10.02) then class: close (proba: 100.0%) | based on 13,950 samples
+
+if (patient_distance_from_practice (miles) > 5.005) and (patient_distance_from_practice (miles) > 10.02) and (patient_distance_from_practice (miles) <= 30.08) then class: far (proba: 100.0%) | based on 8,461 samples
+
+if (patient_distance_from_practice (miles) > 5.005) and (patient_distance_from_practice (miles) > 10.02) and (patient_distance_from_practice (miles) > 30.08) then class: unreasonable distance (proba: 70.27%) | based on 2,862 samples
+
